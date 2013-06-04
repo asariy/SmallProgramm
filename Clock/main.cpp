@@ -76,18 +76,73 @@ public:
 
 };
 
+bool check_data(string str){
+
+	if (str.length() >=5)
+		for (int i = 0; i < 5; ++i)
+		{
+			if (i < 5 && i != 2)
+				if (str[i] < '0' || str[i] > '9')
+					return false;
+
+			if (i == 2 && str[i] != ':')
+				return false;	
+		}
+
+	int hour = atoi(str.substr(0,2).c_str());
+	int minute = atoi(str.substr(3,2).c_str());
+
+
+
+	if (minute < 0 || minute > 59)
+		return false;
+
+
+	if (str.length() == 5){
+		if (hour < 0 || hour > 23)
+			return false;
+		else
+			return true;
+	} 
+
+// printf("----------------------\n");
+
+	if (str.length() == 8 && (hour < 0 || hour > 11))
+		return false;
+
+	if (str.length() == 8 && (str.substr(6,2) == "PM" || str.substr(6,2) == "AM"))
+		return true;
+
+	return false;
+	
+}
+
 int main(int argc, char *argv[])
 {
-	clock *my_clock = new clock(argv[1], false);
 
-	string format = argv[2];
+	if(argc == 4){
+		string format = argv[2];
+		string type_str = argv[3];
 
-	if(format == "deg")
-		printf("%.1f\n", my_clock->get_angle());
-	else if(format == "rad")
-		printf("%.4f\n", my_clock->get_rad());
-	else if(format == "dms")
-		cout << my_clock->get_dms() << endl;
+		if ((check_data(argv[1]))
+			&& (format == "deg" || format == "rad" || format == "dms")
+			&& (type_str == "meh" || type_str == "kvc")
+		){
+
+			bool type = type_str == "meh" ? false : true;
+			clock *my_clock = new clock(argv[1], type);
+
+			if(format == "deg")
+				printf("%.1f\n", my_clock->get_angle());
+			else if(format == "rad")
+				printf("%.4f\n", my_clock->get_rad());
+			else if(format == "dms")
+				cout << my_clock->get_dms() << endl;
+		}
+
+	} else {
+		printf("Incorrect input console parameters.\n");
+	}
 
 	return 0;
 }
